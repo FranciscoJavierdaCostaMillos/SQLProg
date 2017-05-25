@@ -5,17 +5,25 @@
  */
 package ejer_sqlite;
 
+import java.sql.SQLException;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author guille
  */
 public class Ventana extends javax.swing.JFrame {
 
+    BD b = new BD();
+    
     /**
      * Creates new form Ventana
      */
     public Ventana() {
         initComponents();
+        b.connect();
     }
 
     /**
@@ -52,6 +60,11 @@ public class Ventana extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         Addbtn.setText("Añadir");
+        Addbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddbtnActionPerformed(evt);
+            }
+        });
 
         Modbtn.setText("Modificar");
 
@@ -106,6 +119,24 @@ public class Ventana extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void AddbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddbtnActionPerformed
+        b.connect();
+        try {
+            b.crearTb();
+        } catch (SQLException ex) {
+            Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        UUID sid = UUID.randomUUID();
+        String id = sid.toString();
+        try {
+            b.insertarJugador(id, Nametxt.getText(), Integer.parseInt(Scoretxt.getText()));
+        } catch (SQLException ex) {
+            Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+    }//GEN-LAST:event_AddbtnActionPerformed
 
     /**
      * @param args the command line arguments

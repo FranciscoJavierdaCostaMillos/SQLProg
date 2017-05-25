@@ -20,16 +20,15 @@ import java.util.UUID;
  */
 public class BD {
 
-    private String url;
-    private Connection conn = null;
-
-    public BD(String url) {
-        this.url = url;
+    private String url = "jdbc:sqlite:BD1.db";
+    private Connection conn;
+    public static String db = "BD1.db";
+    public BD() {
     }
 
     public void createnewBD(String fileName) {
 
-        String url = "jdbc:sqlite:" + fileName;
+        url = "jdbc:sqlite:" + fileName;
 
         try (Connection conn = DriverManager.getConnection(url)) {
             if (conn != null) {
@@ -43,86 +42,40 @@ public class BD {
         }
     }
 
-    public void connect() {
-        conn = null;
+    public Connection connect() {
+        Connection conn = null;
         try {
-            // db parameters
-            String url = "jdbc:sqlite:BD1.db";
-            // create a connection to the database
             conn = DriverManager.getConnection(url);
-
-            System.out.println("Connection to SQLite has been established.");
-
+            System.out.println("Conectado");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-            }
         }
+        return conn;
     }
 
-    public void crearTablaProductos() throws SQLException {
-        Statement st = conn.createStatement();
-        try {
-            st.execute("CREATE TABLE ScoreTB (id UUID primary key, name String, score int);");
-        } catch (SQLException ex) {
-            System.err.println("Tabla ya creada");
+    public void crearTb() throws SQLException {
+        String url = "jdbc:sqlite:" + db;
+
+        String sql = "CREATE TABLE IF NOT EXISTS ScoreTB (\n"
+                + "	id String PRIMARY KEY,\n"
+                + "	name text NOT NULL,\n"
+                + "	score text NOT NULL,\n"
+                + ");";
+
+        try (Connection conn = DriverManager.getConnection(url);
+                Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
+
     }
 
-    public void insertarProducto(UUID x,String y,int z) {
-        try {
-            PreparedStatement st = conn.prepareStatement("insert into ScoreTB (id,name, score) values (?,?,?)");
-            st.setString(1, x);
-            st.setString(2, y);
-            st.setInt(3, z);
-            st.execute();
-            System.out.println("Insertado correctamente");
-        } catch (SQLException ex) {
-            System.err.println("Registro no insertado");
-        }
+    public void insertarJugador(String x, String y, int z) throws SQLException {
+        String sql = "INSERT INTO ScoreTB VALUES('"+x+"', '"+y+"',"+z+")";
+        Statement statement = conn.createStatement();
+        statement.executeUpdate(sql);
+
     }
 
-    public void seleccionarProducto(String id) throws SQLException {
-        Statement st = conn.createStatement();
-        String sql = "SELECT id,name,score "
-                + "FROM productos WHERE name = ?";
-
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setString(1, id);
-
-        ResultSet rs = pstmt.executeQuery();
-
-        while (rs.next()) {
-            System.out.println(rs.getString("name") + "\t"
-                    + rs.getInt("score"));
-        }
-    }
-
-    public ResultSet getListaId() throws SQLException {
-        Statement st = conn.createStatement();
-        String sql = "SELECT id FROM productos";
-
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        ResultSet rs = pstmt.executeQuery();
-
-        return rs;
-    }
-
-    public void update(String id, int precio, String nombreNuevo) throws SQLException {
-        String sql = "UPDATE productos SET nombre = ? , "
-                + "precio = ? "
-                + "WHERE id = ?";
-
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setString(1, nombreNuevo);
-        pstmt.setInt(2, precio);
-        pstmt.setString(3, id);
-        pstmt.executeUpdate();
-    }
 }
