@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,7 +22,7 @@ import java.util.UUID;
 public class BD {
 
     private String url = "jdbc:sqlite:BD1.db";
-    private Connection conn;
+    private Connection conn=null;
     public static String db = "BD1.db";
     public BD() {
     }
@@ -42,19 +43,21 @@ public class BD {
         }
     }
 
-    public Connection connect() {
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(url);
-            System.out.println("Conectado");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return conn;
+        public Connection connect() {
+        try{
+          Class.forName("org.sqlite.JDBC");
+          Connection con=DriverManager.getConnection("jdbc:sqlite:BD1.db");
+          JOptionPane.showMessageDialog(null,"La conexión está establecida");
+          return con;
+      }  catch(Exception e){
+          JOptionPane.showMessageDialog(null,e);
+          return null;
+      }
     }
 
+
     public void crearTb() throws SQLException {
-        String url = "jdbc:sqlite:" + db;
+        String url = "jdbc:sqlite:BD1.db";
 
         String sql = "CREATE TABLE IF NOT EXISTS ScoreTB (\n"
                 + "	id String PRIMARY KEY,\n"
@@ -71,11 +74,20 @@ public class BD {
 
     }
 
-    public void insertarJugador(String x, String y, int z) throws SQLException {
+
+    public void insertarJugador(String x, String y, String z,Connection cn) throws SQLException {
         String sql = "INSERT INTO ScoreTB VALUES('"+x+"', '"+y+"',"+z+")";
         Statement statement = conn.createStatement();
         statement.executeUpdate(sql);
-
+         try {
+        PreparedStatement pst = cn.prepareStatement("INSERT INTO personas VALUES (?,?,?)");
+        pst.setString(1, x);
+        pst.setString(2, y);
+        pst.setString(3, z);
+        pst.executeUpdate();
+    } catch (Exception e) {
+        System.out.print(e.getMessage());
+    }
     }
 
 }

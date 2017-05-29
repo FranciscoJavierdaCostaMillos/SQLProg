@@ -5,25 +5,57 @@
  */
 package ejer_sqlite;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author guille
  */
 public class Ventana extends javax.swing.JFrame {
-
     BD b = new BD();
-    
+    Connection cn= b.connect();
     /**
      * Creates new form Ventana
      */
-    public Ventana() {
+    public Ventana() throws SQLException {
         initComponents();
-        b.connect();
+        b.crearTb();
+        mostrardatos();
+    }
+    void mostrardatos(){
+    DefaultTableModel modelo= new DefaultTableModel();
+    modelo.addColumn("Id");
+    modelo.addColumn("Nombre");
+    modelo.addColumn("Puntuacion");
+   
+    tabla.setModel(modelo);
+    String sql="";
+        sql="SELECT * FROM ScoreTB";
+
+    
+    String [] datos = new String [30];
+        try {
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next()){
+                datos [0]=rs.getString(1);
+                datos[1]=rs.getString(2);
+                datos[2]=rs.getString(3);
+                modelo.addRow(datos);
+            }
+           tabla.setModel(modelo);
+        } catch (SQLException ex) {
+            Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -36,7 +68,7 @@ public class Ventana extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tabla = new javax.swing.JTable();
         Addbtn = new javax.swing.JButton();
         Modbtn = new javax.swing.JButton();
         Nametxt = new javax.swing.JTextField();
@@ -46,7 +78,7 @@ public class Ventana extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -57,7 +89,7 @@ public class Ventana extends javax.swing.JFrame {
                 "id", "Nombre", "Puntuacion"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tabla);
 
         Addbtn.setText("Añadir");
         Addbtn.addActionListener(new java.awt.event.ActionListener() {
@@ -121,20 +153,13 @@ public class Ventana extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void AddbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddbtnActionPerformed
-        b.connect();
-        try {
-            b.crearTb();
-        } catch (SQLException ex) {
-            Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
-        }
         UUID sid = UUID.randomUUID();
-        String id = sid.toString();
         try {
-            b.insertarJugador(id, Nametxt.getText(), Integer.parseInt(Scoretxt.getText()));
+            b.insertarJugador(Nametxt.getText(), Scoretxt.getText(), sid.toString(), cn);
         } catch (SQLException ex) {
             Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        mostrardatos();
 
     }//GEN-LAST:event_AddbtnActionPerformed
 
@@ -168,7 +193,11 @@ public class Ventana extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Ventana().setVisible(true);
+                try {
+                    new Ventana().setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -181,6 +210,6 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tabla;
     // End of variables declaration//GEN-END:variables
 }
