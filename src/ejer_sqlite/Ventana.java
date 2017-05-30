@@ -28,14 +28,14 @@ public class Ventana extends javax.swing.JFrame {
      */
     public Ventana() throws SQLException {
         initComponents();
-        b.crearTb();
+        b.crearTb(cn);
         mostrardatos();
     }
     void mostrardatos(){
     DefaultTableModel modelo= new DefaultTableModel();
-    modelo.addColumn("Id");
     modelo.addColumn("Nombre");
     modelo.addColumn("Puntuacion");
+    modelo.addColumn("Id");
    
     tabla.setModel(modelo);
     String sql="";
@@ -86,7 +86,7 @@ public class Ventana extends javax.swing.JFrame {
                 {null, null, null}
             },
             new String [] {
-                "id", "Nombre", "Puntuacion"
+                "Nombre", "Puntuacion", "Id"
             }
         ));
         jScrollPane1.setViewportView(tabla);
@@ -160,7 +160,8 @@ public class Ventana extends javax.swing.JFrame {
             Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
         }
         mostrardatos();
-
+        Nametxt.setText("");
+        Scoretxt.setText("");
     }//GEN-LAST:event_AddbtnActionPerformed
 
     /**

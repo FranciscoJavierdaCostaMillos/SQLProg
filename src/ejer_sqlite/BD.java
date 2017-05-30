@@ -56,38 +56,28 @@ public class BD {
     }
 
 
-    public void crearTb() throws SQLException {
-        String url = "jdbc:sqlite:BD1.db";
-
-        String sql = "CREATE TABLE IF NOT EXISTS ScoreTB (\n"
-                + "	id String PRIMARY KEY,\n"
-                + "	name text NOT NULL,\n"
-                + "	score text NOT NULL,\n"
-                + ");";
-
-        try (Connection conn = DriverManager.getConnection(url);
-                Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
+    public void crearTb(Connection c) throws SQLException {
+        Statement st = c.createStatement();
+        try {
+            st.execute("CREATE TABLE ScoreTB (id String primary key, name String, score String);");
+            System.out.println("Table created");
+        } catch (SQLException ex) {
+            System.err.println("Tabla ya creada");
+}
     }
 
 
     public void insertarJugador(String x, String y, String z,Connection cn) throws SQLException {
-        String sql = "INSERT INTO ScoreTB VALUES('"+x+"', '"+y+"',"+z+")";
-        Statement statement = conn.createStatement();
-        statement.executeUpdate(sql);
-         try {
-        PreparedStatement pst = cn.prepareStatement("INSERT INTO personas VALUES (?,?,?)");
-        pst.setString(1, x);
-        pst.setString(2, y);
-        pst.setString(3, z);
-        pst.executeUpdate();
-    } catch (Exception e) {
-        System.out.print(e.getMessage());
-    }
+          try {
+            PreparedStatement st = cn.prepareStatement("insert into ScoreTB (id,name,Score) values (?,?,?)");
+            st.setString(1, x);
+            st.setString(2, y);
+            st.setString(3, z);
+            st.execute();
+            System.out.println("Insertado correctamente");
+        } catch (SQLException ex) {
+            System.err.println("Registro no insertado");
+}
     }
 
 }
