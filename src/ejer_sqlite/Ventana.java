@@ -41,7 +41,7 @@ public class Ventana extends javax.swing.JFrame {
         DefaultTableModel modelo = new DefaultTableModel();
         modelo.addColumn("Id");
         modelo.addColumn("Nombre");
-        modelo.addColumn("Puntuacion");
+        modelo.addColumn("Edad");
 
         tabla.setModel(modelo);
         String sql = "";
@@ -193,9 +193,9 @@ public class Ventana extends javax.swing.JFrame {
     private void ModbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModbtnActionPerformed
         // TODO add your handling code here:
         String n, p, i;
-        i = JOptionPane.showInputDialog("Introduce el id del elemento a modificar:");
-        n = JOptionPane.showInputDialog("Introduce el nuevo nombre:");
-        p = JOptionPane.showInputDialog("Introduce la nueva puntuacion:");
+        i = JOptionPane.showInputDialog("ID:");
+        n = JOptionPane.showInputDialog("Nuevo Nombre:");
+        p = JOptionPane.showInputDialog("Nueva Edad:");
         try {
             b.Actualizar(n, p, i, cn);
         } catch (SQLException ex) {
