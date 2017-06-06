@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author guille
+ * @author JavidaCosta
  */
 public class BD {
 
@@ -48,7 +48,7 @@ public class BD {
         try {
             Class.forName("org.sqlite.JDBC");
             Connection con = DriverManager.getConnection("jdbc:sqlite:BD1.db");
-            JOptionPane.showMessageDialog(null, "La conexión está establecida");
+            JOptionPane.showMessageDialog(null, "Conexión establecida");
             return con;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);

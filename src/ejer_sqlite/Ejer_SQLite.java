@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 /**
  *
- * @author guille
+ * @author JavidaCosta
  */
 public class Ejer_SQLite {
 
@@ -18,8 +18,8 @@ public class Ejer_SQLite {
      */
     public static void main(String[] args) throws SQLException {
         // TODO code application logic here
-        Ventana v = new Ventana();
-        v.setVisible(true);
+        Ventana tabla = new Ventana();
+        tabla.setVisible(true);
     }
     
 }
